@@ -1,25 +1,13 @@
-language: python
-dist: trusty
-python:
-    - "2.7"
-addons:
-  apt:
-    packages:
-      - gfortran
-      - libblas-dev
-      - liblapack-dev
-      - libopenmpi-dev
-      - openmpi-bin
-env:
-     - PARA=no
-install:
-     - ./configure --enable-parallel=$PARA --with-netlib
-     - make pw
-     - make cp
-     - make ph
-     - make epw  
+language: python2
+
+sudo: required
+
+services:
+    - docker
+
+before_install:
+    - docker build -t "qe:latest-debian-atlas-mpich" .
+
 script:
-    - make travis
-git:
-  depth: 3
+    - docker run -it "qe:latest-debian-atlas-mpich" 
 
