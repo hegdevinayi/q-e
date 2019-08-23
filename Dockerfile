@@ -1,36 +1,43 @@
-FROM debian:latest
+FROM    debian:latest
 
- RUN apt-get update && apt-get install -y --fix-missing \
-  fftw3-dev \
-  gfortran \
-  g++ \
-  liblapack-dev \
-  libmpich-dev \
-  make
+LABEL   version="qe:latest-debian-atlas-mpich"
 
-WORKDIR /home/qe
-# ADD Makefile .
-# ADD configure .
-# ADD PW PW
-# ADD Modules Modules
-# ADD install install
-# ADD include include
-# ADD FFTXlib FFTXlib
-# ADD LAXlib LAXlib
-# ADD archive archive
-# ADD clib clib
+ENV     QE_HOME /home/qe
+ENV     RUNDIR /home/rundir
 
-# ADD UtilXlib UtilXlib
-# ADD KS_Solvers KS_Solvers
-ADD . .
-RUN ./configure
-RUN make pw
-ADD wrap.sh wrap.sh
+# dependencies here: https://packages.debian.org/buster/quantum-espresso
+RUN     apt-get update \
+        && apt-get install -y \
+            wget \
+            libatlas-base-dev \
+            libatlas3-base \
+            libfftw3-double3 \
+            libfftw3-dev \
+            libmpich-dev \
+            make \
 
- WORKDIR /home/rundir
+# -l = --no-log-init: do not lastlog and faillog user
+# -U = create a group named [user], add user to it
+RUN     ["/bin/bash", "-c", \
+         "useradd -lmU -s /bin/bash -u 1001 qe"]
 
- ENV PATH=/home/rundir/:${PATH}
+USER    qe
+        
+WORKDIR "${QE_HOME}"
 
- # ENTRYPOINT ["/bin/sh", "/home/rundir/wrap.sh", "/home/qe/bin/pw.x"]
-ENTRYPOINT ["/home/qe/wrap.sh", "/home/qe/bin/pw.x"]
-CMD ["-i run.in"]
+# TODO: install all QE components of interest (other than pw.x)
+COPY    --chown=qe:qe . "${QE_HOME}"
+RUN     ./configure \
+        && make pw
+
+ENV     PATH "$PATH:/home/qe/bin"
+
+COPY    --chown=qe:qe wrap.sh "${QE_HOME}"
+RUN     chmod u+x "${QE_HOME}/wrap.sh"
+
+WORKDIR "${RUNDIR}"
+
+ENTRYPOINT  ["${QE_HOME}/wrap.sh", "pw.x"]
+
+CMD     ["-i pw.in"]
+
