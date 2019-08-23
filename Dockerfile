@@ -14,6 +14,8 @@ RUN     apt-get update \
             libfftw3-double3 \
             libfftw3-dev \
             libmpich-dev \
+            libscalapack-mpich-dev \
+            libelpa-dev \
             make
 
 # -l = --no-log-init: do not lastlog and faillog user
@@ -27,7 +29,7 @@ WORKDIR "${QE_HOME}"
 
 # TODO: install all QE components of interest (other than pw.x)
 COPY    --chown=qe:qe . "${QE_HOME}"
-RUN     ./configure \
+RUN     ./configure -with-scalapack -with-elpa-lib -with-elpa-include \
         && make pw
 
 ENV     PATH "$PATH:/home/qe/bin"
@@ -37,7 +39,7 @@ RUN     chmod u+x "${QE_HOME}/wrap.sh"
 
 WORKDIR "${RUNDIR}"
 
-ENTRYPOINT  ["${QE_HOME}/wrap.sh"]
+ENTRYPOINT  ["/bin/bash", "-c", "${QE_HOME}/wrap.sh"]
 
 CMD     []
 
