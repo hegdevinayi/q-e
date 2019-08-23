@@ -37,7 +37,7 @@ RUN     chmod u+x "${QE_HOME}/wrap.sh"
 
 WORKDIR "${RUNDIR}"
 
-ENTRYPOINT  ["${QE_HOME}/wrap.sh", "pw.x"]
+ENTRYPOINT  ["${QE_HOME}/wrap.sh"]
 
-CMD     ["-i pw.in"]
+CMD     []
 
