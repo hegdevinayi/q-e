@@ -14,7 +14,7 @@ RUN     apt-get update \
             libfftw3-double3 \
             libfftw3-dev \
             libmpich-dev \
-            make \
+            make
 
 # -l = --no-log-init: do not lastlog and faillog user
 # -U = create a group named [user], add user to it
