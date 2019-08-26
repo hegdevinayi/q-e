@@ -6,8 +6,8 @@ services:
     - docker
 
 before_install:
-    - docker build -t "qe:latest-debian-atlas-mpich" .
+    - docker build -t qe:latest-atlas-mpich .
 
 script:
-    - docker run -it "qe:latest-debian-atlas-mpich" --entrypoint simple-test.sh
+    - docker run -it --entrypoint "/home/qe/simple-test.sh" qe:latest-atlas-mpich
 

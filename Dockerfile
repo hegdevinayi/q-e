@@ -1,6 +1,6 @@
 FROM    debian:latest
 
-LABEL   version="qe:latest-debian-atlas-mpich"
+LABEL   version="qe:latest-atlas-mpich"
 
 ENV     QE_HOME /home/qe
 ENV     RUNDIR /home/rundir
