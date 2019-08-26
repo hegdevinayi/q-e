@@ -8,15 +8,14 @@ ENV     RUNDIR /home/rundir
 # dependencies here: https://packages.debian.org/buster/quantum-espresso
 RUN     apt-get update \
         && apt-get install -y \
-            wget \
             libatlas-base-dev \
             libatlas3-base \
             libfftw3-double3 \
             libfftw3-dev \
             libmpich-dev \
-            libscalapack-mpich-dev \
-            libelpa-dev \
-            make
+            make \
+            wget \
+            python2
 
 # -l = --no-log-init: do not lastlog and faillog user
 # -U = create a group named [user], add user to it
@@ -29,7 +28,7 @@ WORKDIR "${QE_HOME}"
 
 # TODO: install all QE components of interest (other than pw.x)
 COPY    --chown=qe:qe . "${QE_HOME}"
-RUN     ./configure -with-scalapack -with-elpa-lib -with-elpa-include \
+RUN     ./configure \
         && make pw
 
 ENV     PATH "$PATH:/home/qe/bin"
