@@ -9,5 +9,5 @@ before_install:
     - docker build -t qe:latest-atlas-mpich .
 
 script:
-    - docker run -it --entrypoint "/home/qe/simple-test.sh" qe:latest-atlas-mpich
+    - docker run -it --entrypoint "/home/qe/docker-pwtest.sh" qe:latest-atlas-mpich
 
