@@ -1,6 +1,0 @@
-image: Dockerfile
-	docker build -t qe-test .
-
-debug: image
-	docker run -it --entrypoint /bin/bash qe-test 
-
